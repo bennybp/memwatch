@@ -1,0 +1,23 @@
+# Path to this file and the parent directories
+set(MEMWATCH_CONFIG_PATH ${CMAKE_CURRENT_LIST_DIR})
+get_filename_component(MEMWATCH_PREFIX_PATH ${MEMWATCH_CONFIG_PATH} DIRECTORY)
+get_filename_component(MEMWATCH_PREFIX_PATH ${MEMWATCH_PREFIX_PATH} DIRECTORY)
+get_filename_component(MEMWATCH_PREFIX_PATH ${MEMWATCH_PREFIX_PATH} DIRECTORY)
+
+
+# The memwatch library we want to link to
+find_library(MEMWATCH_LIBRARY
+             NAMES memwatch
+             PATHS ${MEMWATCH_PREFIX_PATH}/lib
+             NO_DEFAULT_PATH)
+
+# The include directory
+find_path(MEMWATCH_INCLUDE_PATH
+          NAMES memwatch/memwatch.h
+          PATHS ${MEMWATCH_PREFIX_PATH}/include
+          NO_DEFAULT_PATH)
+
+# This interface library
+add_library(memwatch INTERFACE)
+target_include_directories(memwatch INTERFACE ${MEMWATCH_INCLUDE_PATH})
+target_link_libraries(memwatch INTERFACE ${MEMWATCH_LIBRARY})
