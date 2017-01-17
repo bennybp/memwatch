@@ -1,7 +1,15 @@
 cmake_minimum_required(VERSION 3.0)
 
-# This is treated a little differently since it
-# is written in strict C
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_EXTENSIONS False)
+
+# CMake doesn't support Intel C standard until cmake 3.6
+if("${CMAKE_C_COMPILER_ID}" MATCHES "Intel")
+  if("${CMAKE_VERSION}" VERSION_LESS "3.6")
+      add_compile_options(-std=c${CMAKE_C_STANDARD})
+  endif()
+endif()
+
 
 if("${CMAKE_C_COMPILER_ID}" MATCHES "INTEL")
   list(APPEND MEMWATCH_C_FLAGS "-std=c99")

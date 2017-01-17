@@ -21,3 +21,5 @@ find_path(MEMWATCH_INCLUDE_PATH
 add_library(memwatch INTERFACE)
 target_include_directories(memwatch INTERFACE ${MEMWATCH_INCLUDE_PATH})
 target_link_libraries(memwatch INTERFACE ${MEMWATCH_LIBRARY})
+
+set(MEMWATCH_PRELOAD_LIBRARY "${MEMWATCH_LIBRARY}")
