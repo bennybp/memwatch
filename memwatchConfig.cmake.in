@@ -1,25 +1,18 @@
-# Path to this file and the parent directories
-set(MEMWATCH_CONFIG_PATH ${CMAKE_CURRENT_LIST_DIR})
-get_filename_component(MEMWATCH_PREFIX_PATH ${MEMWATCH_CONFIG_PATH} DIRECTORY)
-get_filename_component(MEMWATCH_PREFIX_PATH ${MEMWATCH_PREFIX_PATH} DIRECTORY)
-get_filename_component(MEMWATCH_PREFIX_PATH ${MEMWATCH_PREFIX_PATH} DIRECTORY)
+@PACKAGE_INIT@
 
+# Location of includes
+set(memwatch_INCLUDE_DIR "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_INCLUDEDIR@")
+set(memwatch_INCLUDE_DIRS ${memwatch_INCLUDE_DIR})
 
-# The memwatch library we want to link to
-find_library(MEMWATCH_LIBRARY
-             NAMES memwatch
-             PATHS ${MEMWATCH_PREFIX_PATH}/lib
-             NO_DEFAULT_PATH)
+# Location of libraries
+# Memwatch MUST be a shared library
+set(memwatch_LIBNAME ${CMAKE_SHARED_LIBRARY_PREFIX}memwatch${CMAKE_SHARED_LIBRARY_SUFFIX})
+set(memwatch_LIBRARY "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_LIBDIR@/${memwatch_LIBNAME}")
+set(memwatch_LIBRARIES ${memwatch_LIBRARY})
 
-# The include directory
-find_path(MEMWATCH_INCLUDE_PATH
-          NAMES memwatch/memwatch.h
-          PATHS ${MEMWATCH_PREFIX_PATH}/include
-          NO_DEFAULT_PATH)
+# Don't include targets if this file is being picked up by another
+# project which has already built this as a subproject
+if(NOT TARGET memwatch::memwatch)
+    include("${CMAKE_CURRENT_LIST_DIR}/memwatchTargets.cmake")
+endif()
 
-# This interface library
-add_library(memwatch INTERFACE)
-target_include_directories(memwatch INTERFACE ${MEMWATCH_INCLUDE_PATH})
-target_link_libraries(memwatch INTERFACE ${MEMWATCH_LIBRARY})
-
-set(MEMWATCH_PRELOAD_LIBRARY "${MEMWATCH_LIBRARY}")
