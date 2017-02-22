@@ -33,12 +33,25 @@ static size_t maxsize = -1;
 
 void memwatch_init(void)
 {
+    /* We need to disable -Wpedantic for GCC for warning:
+     *    ISO C forbids conversion of object pointer to function pointer type [-Wpedantic]
+     */
+    #if defined(__GNUC__)
+    _Pragma("GCC diagnostic push")
+    _Pragma("GCC diagnostic ignored \"-Wpedantic\"")
+    #endif
+
     /* Find the real_malloc and free */
     real_malloc = (mallocptr)dlsym(RTLD_NEXT, "malloc");
+    real_free = (freeptr)dlsym(RTLD_NEXT, "free");
+
+    #if defined(__GNUC__)
+    _Pragma("GCC diagnostic pop")
+    #endif
+    
     if(real_malloc == NULL)
         printf("Error: Cannot find real_malloc! Error: %s\n", dlerror());
 
-    real_free = (freeptr)dlsym(RTLD_NEXT, "free");
     if(real_free == NULL)
         printf("Error: Cannot find real_free! Error: %s\n", dlerror());
 }
